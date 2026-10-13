@@ -1,0 +1,484 @@
+diff --git a/README.md b/README.md
+index 1b88714..c4fd5d2 100644
+--- a/README.md
++++ b/README.md
+@@ -1,129 +1,73 @@
+-<p align="center">
+-  <a href="https://opencode.ai">
+-    <picture>
+-      <source srcset="packages/console/app/src/asset/logo-ornate-dark.svg" media="(prefers-color-scheme: dark)">
+-      <source srcset="packages/console/app/src/asset/logo-ornate-light.svg" media="(prefers-color-scheme: light)">
+-      <img src="packages/console/app/src/asset/logo-ornate-light.svg" alt="OpenCode logo">
+-    </picture>
+-  </a>
+-</p>
+-<p align="center">The open source AI coding agent.</p>
+-<p align="center">
+-  <a href="https://opencode.ai/discord"><img alt="Discord" src="https://img.shields.io/discord/1391832426048651334?style=flat-square&label=discord" /></a>
+-  <a href="https://www.npmjs.com/package/@opencode/cli"><img alt="npm" src="https://img.shields.io/npm/v/@opencode/cli?style=flat-square" /></a>
+-  <a href="https://github.com/anomalyco/opencode/actions/workflows/publish.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/anomalyco/opencode/publish.yml?style=flat-square&branch=dev" /></a>
+-</p>
+-
+-<p align="center">
+-  <a href="README.md">English</a> |
+-  <a href="README.zh.md">简体中文</a> |
+-  <a href="README.zht.md">繁體中文</a> |
+-  <a href="README.ko.md">한국어</a> |
+-  <a href="README.de.md">Deutsch</a> |
+-  <a href="README.es.md">Español</a> |
+-  <a href="README.fr.md">Français</a> |
+-  <a href="README.it.md">Italiano</a> |
+-  <a href="README.da.md">Dansk</a> |
+-  <a href="README.ja.md">日本語</a> |
+-  <a href="README.pl.md">Polski</a> |
+-  <a href="README.ru.md">Русский</a> |
+-  <a href="README.bs.md">Bosanski</a> |
+-  <a href="README.ar.md">العربية</a> |
+-  <a href="README.no.md">Norsk</a> |
+-  <a href="README.br.md">Português (Brasil)</a> |
+-  <a href="README.th.md">ไทย</a> |
+-  <a href="README.tr.md">Türkçe</a> |
+-  <a href="README.uk.md">Українська</a> |
+-  <a href="README.bn.md">বাংলা</a> |
+-  <a href="README.gr.md">Ελληνικά</a> |
+-  <a href="README.vi.md">Tiếng Việt</a>
+-</p>
+-
+-[![OpenCode Terminal UI](packages/web/src/assets/lander/screenshot.png)](https://opencode.ai)
+-
+----
+-
+-### Installation
+-
+-```bash
+-# YOLO
+-curl -fsSL https://opencode.ai/install | bash
+-
+-# Package managers
+-npm i -g @opencode/cli@latest      # or bun/pnpm/yarn
+-scoop install opencode             # Windows
+-choco install opencode             # Windows
+-brew install anomalyco/tap/opencode # macOS and Linux (recommended, always up to date)
+-brew install opencode              # macOS and Linux (official brew formula, updated less)
+-sudo pacman -S opencode            # Arch Linux (Stable)
+-paru -S opencode-bin               # Arch Linux (Latest from AUR)
+-mise use -g opencode               # Any OS
+-nix run nixpkgs#opencode           # or github:anomalyco/opencode for latest dev branch
++# Lumus Desk
++
++An early Linux-first desktop fork **based on OpenCode**. Not an official OpenCode release.
++
++Upstream: https://github.com/anomalyco/opencode
++Base commit: `80d43eb7073da9b1763840eb2e1ba778064e2ee3`
++OpenCode's MIT license and copyright are preserved in `LICENSE`.
++
++## Current state
++
++This is source code for an early patch, **not a finished release or a downloadable installer**.
++
++Verified in a local Linux Electron development window:
++- A visible RU/EN button changes the interface language.
++- A theme picker uses OpenCode's existing theme engine, with a new Lumus palette.
++- Light/dark switching changes the visible application colors.
++- An isolated Lumus Desk identity and local backend start, separate from OpenCode's desktop data.
++- The upstream desktop updater is disabled.
++
++Checks: 9 scoped theme tests passed; the UI package typecheck passed. Full desktop/app typechecking did not finish within the available time; production bundling was killed in a 2 GB environment. The general UI test suite had 3 JSX-runtime errors. These are not green release checks.
++
++Not implemented or not verified:
++- Custom command editor and the web-brain / model-hands workflow.
++- Automated Gemini, ChatGPT or Claude web connections.
++- Linux AppImage/deb packages and a Windows installer.
++- Terminal palette behavior, full restart persistence, and a Windows runtime test.
++- Complete rebranding, separate icons and a full telemetry audit.
++
++## Linux development (including Arch-based systems)
++
++The inherited stack is Bun + TypeScript + SolidJS + Electron, with electron-vite and electron-builder. Use a current Bun and Node.js. Electron requires the usual Linux desktop libraries; this is not a headless CLI app. No package-manager command below installs system dependencies or uses sudo.
++
++```sh
++bun install --frozen-lockfile
++cd packages/desktop
++node node_modules/electron/install.js
++bun ./scripts/copy-icons.ts dev
++# Local source backend, not the upstream downloaded service:
++export OPENCODE_CHANNEL=local
++export OPENCODE_VERSION=2.0.0-lumus-local
++export OPENCODE_DESKTOP_SERVER_CHANNEL=local
++export OPENCODE_DESKTOP_CLI_DEV="$(cd ../cli && pwd)"
++# In the limited-memory test environment this avoided the bundled dev mode.
++export LUMUS_LOW_MEMORY_DEV=1
++node node_modules/electron-vite/bin/electron-vite.js dev
+ ```
+ 
+-> [!TIP]
+-> Remove versions older than 0.1.x before installing.
++These commands describe the path used for the local Linux launch. They are not an Arch packaging recipe. Prefer a normal desktop session and keep Electron sandboxing enabled. No advice to run this application as root.
+ 
+-### Desktop App (BETA)
++AppImage/deb are the intended Linux distribution targets, but **no build artifact is provided yet**. Windows is secondary and untested. A release needs a matching locally built CLI, a successful desktop build, packaging checks and a real startup test before an install command can be recommended. Do not use the upstream OpenCode installers to install Lumus Desk.
+ 
+-OpenCode is also available as a desktop application. Download directly from the [releases page](https://github.com/anomalyco/opencode/releases) or [opencode.ai/download](https://opencode.ai/download).
++## Roadmap
+ 
+-| Platform              | Download                           |
+-| --------------------- | ---------------------------------- |
+-| macOS (Apple Silicon) | `opencode-desktop-mac-arm64.dmg`   |
+-| macOS (Intel)         | `opencode-desktop-mac-x64.dmg`     |
+-| Windows               | `opencode-desktop-windows-x64.exe` |
+-| Linux                 | `.deb`, `.rpm`, or `.AppImage`     |
++1. Finish Linux runtime, persistence and terminal checks; stabilize packaging.
++2. Add a custom command editor on the existing command-template system.
++3. Add a separate brain/hands task lifecycle with explicit permissions and diffs.
++4. Test one web-chat bridge at a time. Web subscriptions do not imply API access or permission to automate a service.
+ 
+-```bash
+-# macOS (Homebrew)
+-brew install --cask opencode-desktop
+-# Windows (Scoop)
+-scoop bucket add extras; scoop install extras/opencode-desktop
+-```
+-
+-#### Installation Directory
+-
+-The install script respects the following priority order for the installation path:
+-
+-1. `$OPENCODE_INSTALL_DIR` - Custom installation directory
+-2. `$XDG_BIN_DIR` - XDG Base Directory Specification compliant path
+-3. `$HOME/bin` - Standard user binary directory (if it exists or can be created)
+-4. `$HOME/.opencode/bin` - Default fallback
+-
+-```bash
+-# Examples
+-OPENCODE_INSTALL_DIR=/usr/local/bin curl -fsSL https://opencode.ai/install | bash
+-XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://opencode.ai/install | bash
+-```
+-
+-### Agents
+-
+-OpenCode includes two built-in agents you can switch between with the `Tab` key.
+-
+-- **build** - Default, full-access agent for development work
+-- **plan** - Read-only agent for analysis and code exploration
+-  - Denies file edits by default
+-  - Asks permission before running bash commands
+-  - Ideal for exploring unfamiliar codebases or planning changes
+-
+-Also included is a **general** subagent for complex searches and multistep tasks.
+-This is used internally and can be invoked using `@general` in messages.
+-
+-Learn more about [agents](https://opencode.ai/docs/agents).
+-
+-### Documentation
++## Safety and upstream
+ 
+-For more info on how to configure OpenCode, [**head over to our docs**](https://opencode.ai/docs).
++Remote model responses are untrusted input, not permission to execute shell commands. Existing permissions must not be bypassed. The current updater is disabled to avoid replacing this fork with upstream OpenCode. Do not store keys in the repository.
+ 
+-### Contributing
++This initial publication excludes GitHub Actions workflows. Development remains local until release checks are complete.
+ 
+-If you're interested in contributing to OpenCode, please read our [contributing docs](./CONTRIBUTING.md) before submitting a pull request.
++## Real development-window screenshots
+ 
+-### Building on OpenCode
++Russian, dark Lumus theme:
+ 
+-If you are working on a project that's related to OpenCode and is using "opencode" as part of its name, for example "opencode-dashboard" or "opencode-mobile", please add a note to your README to clarify that it is not built by the OpenCode team and is not affiliated with us in any way.
++![Lumus Desk Russian dark theme](docs/screenshots/ru-dark.png)
+ 
+----
++English, light Lumus theme:
+ 
+-**Join our community** [Discord](https://discord.gg/opencode) | [X.com](https://x.com/opencode)
++![Lumus Desk English light theme](docs/screenshots/en-light.png)
+diff --git a/packages/app/src/shell/titlebar/titlebar.tsx b/packages/app/src/shell/titlebar/titlebar.tsx
+index f3780f5..087de86 100644
+--- a/packages/app/src/shell/titlebar/titlebar.tsx
++++ b/packages/app/src/shell/titlebar/titlebar.tsx
+@@ -10,6 +10,7 @@ import { Tooltip } from "@opencode/ui/tooltip"
+ import { LayoutRoute, useLayout } from "@/shell/state/layout"
+ import { usePlatform } from "@/runtime/platform/platform"
+ import { useCommand } from "@/shell/commands/command"
++import { LumusControls } from "./lumus-controls"
+ import { useLanguage } from "@/runtime/i18n/language"
+ import { useSettings } from "@/settings/model"
+ import { WindowsAppMenu } from "./windows-menu"
+@@ -765,6 +766,7 @@ export function Titlebar(props: { verticalTabs?: { mount?: HTMLElement } }) {
+                 </Show>
+                 <Show when={!props.verticalTabs}>
+                   <div class="relative z-20 flex shrink-0 items-center justify-end gap-0 overflow-visible">
++                    <LumusControls />
+                     <TitlebarItems items={titlebarItems} />
+                     <TitlebarRightMount />
+                   </div>
+diff --git a/packages/desktop/electron-builder.config.ts b/packages/desktop/electron-builder.config.ts
+index f6d8de6..2180dd3 100644
+--- a/packages/desktop/electron-builder.config.ts
++++ b/packages/desktop/electron-builder.config.ts
+@@ -19,7 +19,7 @@ const signScript = path.join(rootDir, "script", "sign-windows.ps1")
+ 
+ // The Electron 42 packaging update briefly installed Linux launchers/icons under
+ // "opencode-desktop". Keep that hidden desktop entry around so existing GNOME/KDE
+-// pins still resolve after the canonical app id changes back to ai.opencode.desktop.
++// pins still resolve after the canonical app id changes back to ai.lumus.desk.
+ const legacyDesktopEntry = path.join(packageDir, "resources", "linux", "opencode-desktop.desktop")
+ 
+ const legacyDesktopEntryFpm = `${legacyDesktopEntry}=/usr/share/applications/opencode-desktop.desktop`
+@@ -64,23 +64,23 @@ function resolveChannel() {
+ }
+ 
+ const APP_IDS = {
+-  dev: "ai.opencode.desktop.dev",
+-  beta: "ai.opencode.desktop.beta",
+-  prod: "ai.opencode.desktop",
++  dev: "ai.lumus.desk.dev",
++  beta: "ai.lumus.desk.beta",
++  prod: "ai.lumus.desk",
+ } as const
+ 
+ const getBase = (appId: string): Configuration => {
+   const target = getCurrentCli()
+ 
+   return {
+-    artifactName: "opencode-desktop-${os}-${arch}.${ext}",
++    artifactName: "lumus-desk-${os}-${arch}.${ext}",
+     directories: {
+       output: "dist",
+       buildResources: "resources",
+     },
+     // Linux launchers are .desktop files, so this is the desktop file name,
+-    // not just the app id. For prod, app id "ai.opencode.desktop" becomes
+-    // "ai.opencode.desktop.desktop".
++    // not just the app id. For prod, app id "ai.lumus.desk" becomes
++    // "ai.lumus.desk.desktop".
+     // https://developer.gnome.org/documentation/guidelines/maintainer/integrating.html
+     // https://www.electron.build/docs/linux/
+     extraMetadata: {
+@@ -177,8 +177,8 @@ const getBase = (appId: string): Configuration => {
+       target: ["dmg", "zip"],
+     },
+     protocols: {
+-      name: "OpenCode",
+-      schemes: ["opencode"],
++      name: "Lumus Desk",
++      schemes: ["lumus-desk"],
+     },
+     win: {
+       icon: `resources/icons/icon.ico`,
+@@ -221,9 +221,9 @@ export function getConfig() {
+       return {
+         ...base,
+         appId,
+-        productName: "OpenCode Dev",
++        productName: "Lumus Desk Dev",
+         deb: { fpm: [metainfoFpm(appId)] },
+-        rpm: { packageName: "opencode-dev", fpm: [metainfoFpm(appId)] },
++        rpm: { packageName: "lumus-desk-dev", fpm: [metainfoFpm(appId)] },
+       }
+     }
+ 
+@@ -231,15 +231,11 @@ export function getConfig() {
+       return {
+         ...base,
+         appId,
+-        productName: "OpenCode Beta",
+-        protocols: { name: "OpenCode Beta", schemes: ["opencode"] },
+-        publish: {
+-          provider: "generic",
+-          url: "https://opencode.ai/update/api/beta/desktop/opencode/",
+-          channel: "latest",
+-        },
++        productName: "Lumus Desk Beta",
++        protocols: { name: "Lumus Desk Beta", schemes: ["lumus-desk"] },
++        publish: null,
+         deb: { fpm: [metainfoFpm(appId)] },
+-        rpm: { packageName: "opencode-beta", fpm: [metainfoFpm(appId)] },
++        rpm: { packageName: "lumus-desk-beta", fpm: [metainfoFpm(appId)] },
+       }
+     }
+ 
+@@ -247,15 +243,11 @@ export function getConfig() {
+       return {
+         ...base,
+         appId,
+-        productName: "OpenCode",
+-        protocols: { name: "OpenCode", schemes: ["opencode"] },
+-        publish: {
+-          provider: "generic",
+-          url: "https://opencode.ai/update/api/latest/desktop/opencode/",
+-          channel: "latest",
+-        },
+-        deb: { fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
+-        rpm: { packageName: "opencode", fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
++        productName: "Lumus Desk",
++        protocols: { name: "Lumus Desk", schemes: ["lumus-desk"] },
++        publish: null,
++        deb: { fpm: [metainfoFpm(appId)] },
++        rpm: { packageName: "lumus-desk", fpm: [metainfoFpm(appId)] },
+       }
+     }
+   }
+diff --git a/packages/desktop/electron.vite.config.ts b/packages/desktop/electron.vite.config.ts
+index d238411..2e1ceee 100644
+--- a/packages/desktop/electron.vite.config.ts
++++ b/packages/desktop/electron.vite.config.ts
+@@ -118,7 +118,7 @@ const require = __cjs_mod__.createRequire(import.meta.url);
+     },
+     renderer: {
+       experimental: {
+-        bundledDev: true,
++        bundledDev: process.env.LUMUS_LOW_MEMORY_DEV !== "1",
+       },
+       define: {
+         "import.meta.env.OPENCODE_VERSION": JSON.stringify(process.env.OPENCODE_VERSION),
+diff --git a/packages/desktop/src/main/constants.ts b/packages/desktop/src/main/constants.ts
+index 7997267..9b91194 100644
+--- a/packages/desktop/src/main/constants.ts
++++ b/packages/desktop/src/main/constants.ts
+@@ -9,18 +9,18 @@ export const CHANNEL: Channel = raw === "local" || raw === "dev" || raw === "bet
+ export const VERSION = app.isPackaged ? app.getVersion() : (process.env.OPENCODE_VERSION ?? app.getVersion())
+ 
+ const appNames: Record<string, string> = {
+-  dev: "OpenCode Dev",
+-  beta: "OpenCode Beta",
+-  prod: "OpenCode",
++  dev: "Lumus Desk Dev",
++  beta: "Lumus Desk Beta",
++  prod: "Lumus Desk",
+ }
+ 
+ const appIDs: Record<string, string> = {
+-  dev: "ai.opencode.desktop.dev",
+-  beta: "ai.opencode.desktop.beta",
+-  prod: "ai.opencode.desktop",
++  dev: "ai.lumus.desk.dev",
++  beta: "ai.lumus.desk.beta",
++  prod: "ai.lumus.desk",
+ }
+ 
+ // Local renderer/server mode keeps the dev application identity.
+-export const APP_NAME = app.isPackaged ? appNames[CHANNEL] : "OpenCode Dev"
++export const APP_NAME = app.isPackaged ? appNames[CHANNEL] : "Lumus Desk Dev"
+ 
+-export const APP_ID = app.isPackaged ? appIDs[CHANNEL] : "ai.opencode.desktop.dev"
++export const APP_ID = app.isPackaged ? appIDs[CHANNEL] : "ai.lumus.desk.dev"
+diff --git a/packages/desktop/src/main/index.ts b/packages/desktop/src/main/index.ts
+index 6bfd16e..700d536 100644
+--- a/packages/desktop/src/main/index.ts
++++ b/packages/desktop/src/main/index.ts
+@@ -23,7 +23,8 @@ if (acquireApplicationLock()) {
+     registerStorageSnapshotHandler()
+     createEarlyWindow()
+     marks.window = Date.now()
+-    startSidecarProbe()
++    // Lumus Desk must not adopt an existing OpenCode service.
++    if (process.env.OPENCODE_DESKTOP_ISOLATED_SERVER !== "1") startSidecarProbe()
+ 
+     // The window's renderer is already loading. Its HTML and preloaded chunks are served from this
+     // thread, so the bundle waits for that burst to be answered (or a cap) before it evaluates.
+diff --git a/packages/desktop/src/main/lifecycle/configure.ts b/packages/desktop/src/main/lifecycle/configure.ts
+index 878d184..e4296af 100644
+--- a/packages/desktop/src/main/lifecycle/configure.ts
++++ b/packages/desktop/src/main/lifecycle/configure.ts
+@@ -32,6 +32,14 @@ export function configureApplication() {
+   const testRoot = createTestRoot()
+   app.setPath("userData", testRoot ? path.join(testRoot, "desktop") : path.join(app.getPath("appData"), APP_ID))
+ 
++  const isolatedRoot = testRoot ?? path.join(app.getPath("userData"), "workspace-state")
++  for (const dir of ["data", "config", "cache", "state"]) mkdirSync(path.join(isolatedRoot, dir), { recursive: true })
++  process.env.XDG_DATA_HOME = path.join(isolatedRoot, "data")
++  process.env.XDG_CONFIG_HOME = path.join(isolatedRoot, "config")
++  process.env.XDG_CACHE_HOME = path.join(isolatedRoot, "cache")
++  process.env.XDG_STATE_HOME = path.join(isolatedRoot, "state")
++  process.env.OPENCODE_DESKTOP_ISOLATED_SERVER = "1"
++
+   if (testRoot) {
+     app.setPath("sessionData", path.join(testRoot, "session"))
+ 
+diff --git a/packages/desktop/src/main/service/background-service.ts b/packages/desktop/src/main/service/background-service.ts
+index 2d156b2..df73940 100644
+--- a/packages/desktop/src/main/service/background-service.ts
++++ b/packages/desktop/src/main/service/background-service.ts
+@@ -34,7 +34,7 @@ const connect = Effect.fn("BackgroundService.connect")(function* (mode: "initial
+   const path = yield* Path.Path
+   const desktopCli = yield* DesktopCli.Service
+   const runFork = Effect.runForkWith(yield* Effect.context<FileSystem.FileSystem | Path.Path>())
+-  const isolated = !app.isPackaged && process.env.OPENCODE_DESKTOP_ISOLATED_SERVER === "1"
++  const isolated = process.env.OPENCODE_DESKTOP_ISOLATED_SERVER === "1"
+   const cli = yield* desktopCli.resolve
+   const version = mode === "initial" ? cli.version : undefined
+ 
+@@ -54,7 +54,7 @@ const connect = Effect.fn("BackgroundService.connect")(function* (mode: "initial
+         ...cli.command,
+         "serve",
+         "--service",
+-        ...(isolated ? ["--hostname", "0.0.0.0", "--port", String(0x0c0c)] : []),
++        ...(isolated ? ["--hostname", "127.0.0.1", "--port", String(0x4c44)] : []),
+       ],
+       onStart: (reason, previousVersion) =>
+         runFork(Effect.logInfo("v2 CLI background service starting", { reason, previousVersion })),
+diff --git a/packages/desktop/src/main/windows/appearance.ts b/packages/desktop/src/main/windows/appearance.ts
+index 0589064..db9c20d 100644
+--- a/packages/desktop/src/main/windows/appearance.ts
++++ b/packages/desktop/src/main/windows/appearance.ts
+@@ -22,7 +22,7 @@ export function windowAppearance(path: Path.Path, paths: DesktopPaths.Resolved)
+   const mode = tone()
+ 
+   return {
+-    title: "OpenCode",
++    title: "Lumus Desk",
+     icon: iconPath(path, paths),
+     backgroundColor: backgroundColor ?? storedBackgroundColor(),
+     ...(process.platform === "darwin"
+diff --git a/packages/desktop/src/main/windows/early.ts b/packages/desktop/src/main/windows/early.ts
+index c7407c8..96f4c7f 100644
+--- a/packages/desktop/src/main/windows/early.ts
++++ b/packages/desktop/src/main/windows/early.ts
+@@ -48,7 +48,7 @@ export function createEarlyWindow() {
+     height: state.height,
+     show: true,
+     autoHideMenuBar: true,
+-    title: "OpenCode",
++    title: "Lumus Desk",
+     icon: path.join(icons, `icon.${process.platform === "win32" ? "ico" : "png"}`),
+     backgroundColor: storedBackgroundColor(),
+     ...(process.platform === "darwin" ? { titleBarStyle: "hidden" as const, trafficLightPosition: { x: 14, y: 14 } } : {}),
+diff --git a/packages/desktop/src/renderer/index.html b/packages/desktop/src/renderer/index.html
+index b7c429f..26e90db 100644
+--- a/packages/desktop/src/renderer/index.html
++++ b/packages/desktop/src/renderer/index.html
+@@ -3,7 +3,7 @@
+   <head>
+     <meta charset="utf-8" />
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+-    <title>OpenCode</title>
++    <title>Lumus Desk</title>
+     <link rel="icon" type="image/png" href="./favicon-96x96-v3.png" sizes="96x96" />
+     <link rel="icon" type="image/svg+xml" href="./favicon-v3.svg" />
+     <link rel="shortcut icon" href="./favicon-v3.ico" />
+diff --git a/packages/gui-extensions/src/updater/main.ts b/packages/gui-extensions/src/updater/main.ts
+index 355dc5e..89ef217 100644
+--- a/packages/gui-extensions/src/updater/main.ts
++++ b/packages/gui-extensions/src/updater/main.ts
+@@ -9,7 +9,7 @@ import { make } from "./machine"
+ const setup: MainSetup<typeof definition> = async (ctx) => {
+   const build = ctx.build
+   const lifecycle = ctx.lifecycle
+-  const enabled = build.packaged && build.channel !== "dev"
++  const enabled = false // Lumus Desk: upstream updater must never replace this fork.
+   // Holds no resources, so it needs no cleanup.
+   const context = logContext(ctx.log.write)
+   const runPromise = Effect.runPromiseWith(context)
+diff --git a/packages/ui/src/theme/context.tsx b/packages/ui/src/theme/context.tsx
+index 9a4cc5a..7fadb44 100644
+--- a/packages/ui/src/theme/context.tsx
++++ b/packages/ui/src/theme/context.tsx
+@@ -83,6 +83,7 @@ const names: Record<string, string> = {
+   solarized: "Solarized",
+   synthwave84: "Synthwave '84",
+   tokyonight: "Tokyonight",
++  lumus: "Lumus",
+   vercel: "Vercel",
+   vesper: "Vesper",
+   zenburn: "Zenburn",
